@@ -111,6 +111,10 @@ namespace HealthcareRecordsAPI
                 .HasKey(d => d.Id);
 
             modelBuilder.Entity<Doctor>()
+                .Property(d => d.CabinetId)
+                .IsRequired(false);
+
+            modelBuilder.Entity<Doctor>()
                 .Property(d => d.FullName)
                 .HasMaxLength(100)
                 .IsRequired();
