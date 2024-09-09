@@ -1,6 +1,7 @@
 ﻿using HealthcareRecordsAPI.Intefaces;
 using HealthcareRecordsAPI.Models;
 using Microsoft.EntityFrameworkCore;
+using System.Linq.Dynamic.Core;
 
 namespace HealthcareRecordsAPI.Repositories
 {
@@ -13,23 +14,39 @@ namespace HealthcareRecordsAPI.Repositories
             _context = context;
         }
 
-        public async Task<Patient> GetById(int id) => await _context.Patients.FindAsync(id);
-
-        public async Task<IEnumerable<Patient>> GetAll() => await _context.Patients.ToListAsync();
-
-        public async Task Add(Patient patient)
+        public async Task<Patient> GetByIdAsync(int id)
         {
-            await _context.Patients.AddAsync(patient);
+            return await _context.Patients.Include(p => p.Section)
+            .FirstOrDefaultAsync(p => p.Id == id);
+        }
+
+        public async Task<IEnumerable<Patient>> GetAllAsync(string sortField, string sortOrder, int pageNumber, int pageSize)
+        {
+            var query = await _context.Patients
+        .Include(p => p.Section)
+        .OrderBy($"{sortField} {sortOrder}")
+        .Skip((pageNumber - 1) * pageSize)
+        .Take(pageSize)
+        .ToListAsync();
+
+            
+
+            return query;
+        }
+
+        public async Task AddAsync(Patient patient)
+        {
+            _context.Patients.Add(patient);
             await _context.SaveChangesAsync();
         }
 
-        public async Task Update(Patient patient)
+        public async Task UpdateAsync(Patient patient)
         {
-            _context.Update(patient);
+            _context.Patients.Update(patient);
             await _context.SaveChangesAsync();
         }
 
-        public async Task Delete(int id)
+        public async Task DeleteAsync(int id)
         {
             var patient = await _context.Patients.FindAsync(id);
             if (patient != null)

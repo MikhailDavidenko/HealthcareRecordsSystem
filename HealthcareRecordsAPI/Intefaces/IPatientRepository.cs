@@ -4,10 +4,10 @@ namespace HealthcareRecordsAPI.Intefaces
 {
     public interface IPatientRepository
     {
-        Task<Patient> GetById(int id);
-        Task<IEnumerable<Patient>> GetAll();
-        Task Add(Patient patient);
-        Task Update(Patient patient);
-        Task Delete(int id);
+        Task<Patient> GetByIdAsync(int id);
+        Task<IEnumerable<Patient>> GetAllAsync(string sortField, string sortOrder, int pageNumber, int pageSize);
+        Task AddAsync(Patient patient);
+        Task UpdateAsync(Patient patient);
+        Task DeleteAsync(int id);
     }
 }

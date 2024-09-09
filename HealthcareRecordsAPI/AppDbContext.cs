@@ -104,6 +104,13 @@ namespace HealthcareRecordsAPI
             modelBuilder.Entity<Patient>()
                 .Property(p => p.Gender)
                 .HasMaxLength(3);
+
+            modelBuilder.Entity<Patient>()
+                .HasOne(d => d.Section)
+                .WithMany(s => s.Patients)
+                .HasForeignKey(d => d.SectionId)
+                .OnDelete(DeleteBehavior.SetNull);
+
             #endregion
 
             #region Конфигурация для Doctor
